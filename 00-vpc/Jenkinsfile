@@ -21,6 +21,7 @@ pipeline {
         choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
         password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
     } */
+    
     stages {
         stage('Init') {
             steps {
@@ -30,8 +31,26 @@ pipeline {
                     sh """
                         cd 00-vpc
                         terraform init -reconfigure
+                        terraform plan
                     """
                     // everytime we need to initialise terraform because we delete directory in    pipeline(we can see that command of deleting at post --> always --> deleteDir())
+                    }
+                }
+            }
+        }   
+        stage('Apply') {
+            input {
+                message "Should we continue?"
+                ok "Yes, we should."
+            }
+            steps {
+                script{
+                    // copied from backend --> Jenkinfile --> stage('Docker Build')
+                    withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    sh """
+                        cd 00-vpc
+                        terraform apply -auto-approve
+                    """
                     }
                 }
             }
