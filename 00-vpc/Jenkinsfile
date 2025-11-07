@@ -29,7 +29,7 @@ pipeline {
                     withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                     sh """
                         cd 00-vpc
-                        # everytime we need to initialise terraform because we delete directory in pipeline(we can see that command of deleting at post --> always --> deleteDir())terraform init -reconfigure
+                        // everytime we need to initialise terraform because we delete directory in pipeline(we can see that command of deleting at post --> always --> deleteDir())terraform init -reconfigure
                     """
                     }
                 }
