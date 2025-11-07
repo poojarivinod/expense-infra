@@ -1,0 +1,50 @@
+// In google search as jenkins pipeline syntax --> pipeline syntax(jenkins) --> click on pipeline --> copy the code below this Declarative Pipeline fundamentals 
+pipeline {
+    agent { label 'AGENT-1' }
+    environment { 
+        PROJECT = 'EXPENSE'
+        COMPONENT = 'BACKEND' 
+        // DEPLOY_TO = 'QA'
+        DEPLOY_TO = 'production'
+    }
+    options { 
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES') 
+        // timeout(time: 5, unit: 'SECONDS')
+    } 
+    /* parameters {
+        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
+        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
+        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
+        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
+    } */
+    stages {
+        stage('Init') {
+            steps {
+                script{
+                    // copied from backend --> Jenkinfile --> stage('Docker Build')
+                    withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    sh """
+                        cd 00-vpc
+                        # everytime we need to initialise terraform because we delete directory in pipeline(we can see that command of deleting at post --> always --> deleteDir())terraform init -reconfigure
+                    """
+                    }
+                }
+            }
+        }
+    }    
+    //In google search as jenkins pipeline syntax --> pipeline syntax(jenkins) --> post
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+            deleteDir() // deletedir option post jenkins --> stack overflow
+        }
+        failure { 
+            echo 'I will run when pipeline is failed'
+        }
+        success { 
+            echo 'I will run when pipeline is success'
+        }
+    }    
+}
