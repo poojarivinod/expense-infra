@@ -2,8 +2,7 @@
 # search in google as "aws key pair terraform" -->  Terraform Registry
 resource "aws_key_pair" "eks" {
   key_name   = "expense-eks"
-  public_key = file("~/Downloads/devops/devops.pub") # ~ is the home directory
-}
+  public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII+WhJTuT6q5qyTtSsE5dKFsFwIu1E+bpTAEufyntMqY Admin@DESKTOP-107I85T" # pub key of devops
 
 
 # search in google as "terraform aws eks"--> click on "Terraform Registry" --> click on github.com/terraform-aws-modules/terraform-aws-eks --> scroll down --> EKS Managed Node Group
@@ -13,7 +12,7 @@ module "eks" {
 
   name               = local.name
   kubernetes_version = "1.32" # later we upgrade to 1.33
-  #kubernetes_version = "1.33" # later we upgrade to 1.33
+  #kubernetes_version = "1.33" 
   create_node_security_group = false #default eks node creates its own security group,we don't want default security group for node
   create_security_group = false #default eks node creates its own security group,we don't want default security group for node
   security_group_id = local.eks_control_plane_sg_id

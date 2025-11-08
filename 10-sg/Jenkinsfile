@@ -78,7 +78,22 @@ pipeline {
                     }
                 }      
             }
-        }    
+        }
+        // sequential stages jenkins ---> Pipeline Syntax --> Sequential Stages
+       /*  stage('Sequential') {
+            stages {
+                stage('In Sequential 1') {
+                    steps {
+                        echo "In Sequential 1"
+                    }
+                }
+                stage('In Sequential 2') {
+                    steps {
+                        echo "In Sequential 2"
+                    }
+                }
+            }
+        } */
     }    
     //In google search as jenkins pipeline syntax --> pipeline syntax(jenkins) --> post
     post { 
