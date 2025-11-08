@@ -3,7 +3,7 @@
 resource "aws_key_pair" "eks" {
   key_name   = "expense-eks"
   public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII+WhJTuT6q5qyTtSsE5dKFsFwIu1E+bpTAEufyntMqY Admin@DESKTOP-107I85T" # pub key of devops
-
+}
 
 # search in google as "terraform aws eks"--> click on "Terraform Registry" --> click on github.com/terraform-aws-modules/terraform-aws-eks --> scroll down --> EKS Managed Node Group
 module "eks" {
