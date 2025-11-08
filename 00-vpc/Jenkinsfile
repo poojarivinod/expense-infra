@@ -14,13 +14,10 @@ pipeline {
         // In google search as colors in jenkins console output -->click on AnsiColor | Jenkins plugin
         ansiColor('xterm')
     } 
-    /* parameters {
-        string(name: 'PERSON', defaultValue: 'Mr Jenkins', description: 'Who should I say hello to?')
-        text(name: 'BIOGRAPHY', defaultValue: '', description: 'Enter some information about the person')
-        booleanParam(name: 'TOGGLE', defaultValue: true, description: 'Toggle this value')
-        choice(name: 'CHOICE', choices: ['One', 'Two', 'Three'], description: 'Pick something')
-        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a password')
-    } */
+    
+    parameters {
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Pick something')
+    } 
     
     stages {
         stage('Init') {
@@ -55,6 +52,17 @@ pipeline {
                 }
             }
         }
+        stage('Trigger SG') {
+            when { 
+                expression { params.ACTION == 'apply'}
+            }
+            // In google search as "jenkins pipeline trigger downstream job" --> click on Metamorphant
+            steps {
+                build job: '10-sg', parameters: [string(name: 'ACTION', value: 'apply')], propagate: false
+            // In google search as "jenkins pipeline trigger downstream job" --> click on Pipeline: Build Step
+            // If propagate is true, then waits until 10-sg is success. We are keeping propagate is false because vpc is not responsibe for 10-sg is success or failure.     
+            }
+        }   
     }    
     //In google search as jenkins pipeline syntax --> pipeline syntax(jenkins) --> post
     post { 
