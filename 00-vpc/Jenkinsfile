@@ -58,9 +58,9 @@ pipeline {
             }
             // In google search as "jenkins pipeline trigger downstream job" --> click on Metamorphant
             steps {
-                build job: '10-sg', parameters: [string(name: 'ACTION', value: 'apply')], propagate: false
+                build job: '10-sg', parameters: [string(name: 'ACTION', value: 'apply')], propagate: true
             // In google search as "jenkins pipeline trigger downstream job" --> click on Pipeline: Build Step
-            // If propagate is true, then waits until 10-sg is success. We are keeping propagate is false because vpc is not responsibe for 10-sg is success or failure.     
+            // If propagate is false, then waits until 10-sg is success. We are keeping propagate is true because vpc is not responsibe for 10-sg is success or failure.     
             }
         }   
     }    

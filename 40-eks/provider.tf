@@ -2,12 +2,12 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "6.19.0"
+      version = "6.19.0" 
     }
   }
   backend "s3" { #s3 terraform backend
     bucket = "vinod-tf-remote-state-dev"
-    key    = "expense-dev-sg" #you should have unique keys with in the buckets, same key should not used in other repos or tf project
+    key    = "expense-dev-eks" #you should have unique keys with in the buckets, same key should not used in other repos or tf project
     region = "us-east-1"
     dynamodb_table = "vinod-tf-remote-state-dev" # dynamodb_table terraform --> spacelift
   }
