@@ -25,7 +25,7 @@ pipeline {
                     // copied from backend --> Jenkinfile --> stage('Docker Build')
                     withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                     sh """
-                        cd 10-sg
+                        cd 60-acm
                         terraform init -reconfigure
                         terraform plan
                     """
@@ -35,61 +35,14 @@ pipeline {
             }
         }   
         stage('Apply') {
-            // input {
-            //     message "Should we continue?"
-            //     ok "Yes, we should."
-            // }
             steps {
                 script{
                     // copied from backend --> Jenkinfile --> stage('Docker Build')
                     withAWS(region: 'us-east-1', credentials: 'aws-creds') {
                     sh """
-                        cd 10-sg
+                        cd 60-acm
                         terraform apply -auto-approve
                     """
-                    }
-                }
-            }
-        }
-        stage('Parallel Stage') {
-            // when ACTION is apply then triggers the below parallel things
-            when { 
-                expression { params.ACTION == 'apply'}
-            }
-            parallel {
-                stage('20-bastion') {
-                    steps {
-                        build job: '20-bastion', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
-                    }
-                }
-                stage('30-rds') {
-                    steps {
-                        build job: '30-rds', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
-                    }
-                }
-                stage('40-eks') {
-                    steps {
-                        build job: '40-eks', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
-                    }
-                }
-                stage('50-ecr') {
-                    steps {
-                        build job: '50-ecr', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
-                    }
-                }      
-            }
-        }
-        // sequential stages jenkins ---> Pipeline Syntax --> Sequential Stages
-        stage('Sequential') {
-            stages {
-                stage('60-acm') {
-                    steps {
-                        build job: '60-acm', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
-                    }
-                }
-                stage('70-ingress-alb') {
-                    steps {
-                        build job: '70-ingress-alb', parameters: [string(name: 'ACTION', value: 'apply')], wait: false
                     }
                 }
             }
