@@ -51,7 +51,7 @@ pipeline {
                 }
             }
         }
-        stage('Parallel Stage') {
+       /*  stage('Parallel Stages') {
             // when ACTION is apply then triggers the below parallel things
             when { 
                 expression { params.ACTION == 'apply'}
@@ -94,7 +94,7 @@ pipeline {
                 }
             }
         }
-    }    
+    }     */
     //In google search as jenkins pipeline syntax --> pipeline syntax(jenkins) --> post
     post { 
         always { 
