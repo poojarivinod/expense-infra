@@ -27,7 +27,6 @@ pipeline {
                     sh """
                         cd 70-ingress-alb
                         terraform init -reconfigure
-                        terraform plan
                     """
                     // everytime we need to initialise terraform because we delete directory in    pipeline(we can see that command of deleting at post --> always --> deleteDir())
                     }
@@ -56,6 +55,9 @@ pipeline {
             }
         }
         stage('Destroy Infra') {
+            when { 
+                expression { params.ACTION == 'destroy'}
+            }
             steps {
                 script{
                     // copied from backend --> Jenkinfile --> stage('Docker Build')
