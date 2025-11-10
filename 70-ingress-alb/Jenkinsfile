@@ -27,14 +27,13 @@ pipeline {
                     sh """
                         cd 70-ingress-alb
                         terraform init -reconfigure
-                        terraform plan
                     """
                     // everytime we need to initialise terraform because we delete directory in    pipeline(we can see that command of deleting at post --> always --> deleteDir())
                     }
                 }
             }
-        }
-        stage('Apply') {
+        }    
+        /* stage('Apply') {
             steps {
                 script{
                     // copied from backend --> Jenkinfile --> stage('Docker Build')
@@ -46,48 +45,50 @@ pipeline {
                     }
                 }
             }
+        } */
+        stage('Apply or Destroy') {
+            steps {
+                script{
+                    // copied from backend --> Jenkinfile --> stage('Docker Build')
+                    withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    if (params.ACTION == 'apply') {
+                        sh """
+                            cd 70-ingress-alb
+                            terraform plan
+                            terraform apply -auto-approve
+                        """
+                    } else {
+                        sh """
+                            cd 70-ingress-alb
+                            terraform destroy -auto-approve
+                        """
+                    }
+                    }
+                }
+            }
         }
-        // stage('Apply or Destroy') {
-        //     steps {
-        //         script{
-        //             // copied from backend --> Jenkinfile --> stage('Docker Build')
-        //             withAWS(region: 'us-east-1', credentials: 'aws-creds') 
-        //              sh """
-        //                  cd 70-ingress-alb
-        //                  if [ (params.ACTION == 'apply') ] {
-        //                  then
-        //                      terraform apply -auto-approve
-        //                  else
-        //                      terraform destroy -auto-approve
-        //                  fi
-        //              sh """
-        //               }
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Destroy Infra') {
-        //     when { 
-        //         expression { params.ACTION == 'destroy'}
-        //     }
-        //     steps {
-        //         script{
-        //             // copied from backend --> Jenkinfile --> stage('Docker Build')
-        //             withAWS(region: 'us-east-1', credentials: 'aws-creds') {
-        //             // for loop in groovy --> stack overflow
-        //             def list = ["60-acm", "50-ecr", "40-eks", "30-rds", "20-bastion", "10-sg", "00-vpc"]
-        //             for(item in list){
-        //                 // each item taken into variable $item and destroyed
-        //                 sh """
-        //                     cd $item
-        //                     terraform init -reconfigure
-        //                     terraform destroy -auto-approve
-        //                 """
-        //             }
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Destroy Infra') {
+            when { 
+                expression { params.ACTION == 'destroy'}
+            }
+            steps {
+                script{
+                    // copied from backend --> Jenkinfile --> stage('Docker Build')
+                    withAWS(region: 'us-east-1', credentials: 'aws-creds') {
+                    // for loop in groovy --> stack overflow
+                    def list = ["60-acm", "50-ecr", "40-eks", "30-rds", "20-bastion", "10-sg", "00-vpc"]
+                    for(item in list){
+                        // each item taken into variable $item and destroyed
+                        sh """
+                            cd $item
+                            terraform init -reconfigure
+                            terraform destroy -auto-approve
+                        """
+                    }
+                    }
+                }
+            }
+        }
     }    
     //In google search as jenkins pipeline syntax --> pipeline syntax(jenkins) --> post
     post { 
