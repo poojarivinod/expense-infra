@@ -55,7 +55,7 @@ module "eks" {
       iam_role_additional_policies = { # ec2 --> IAM --> policies 
         AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy" # search as ebs --> click on AmazonEBSCSIDriverPolicy to get arn
         AmazonEFSCSIDriverPolicy = "arn:aws:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy" # search as efs --> click on AmazonEFSCSIDriverPolicy to get arn
-        ElasticLoadBalancingFullAccess = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess" # search as ElasticLoadBalancing --> click on ElasticLoadBalancingFullAccess to get arn
+        AmazonEKSLoadBalancingPolicy = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
       }
     }
       

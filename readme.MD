@@ -15,8 +15,9 @@ We are using bastion as our EKS client, so it will have
 * Since we are using RDS instead of MySQL image, we need to configure RDS manually, we are creating schema as part of RDS but table and user should be created.
 * Make sure MySQL instance allows port no 3306 from bastion
 
+ (we need to give our own rds endpoint, it is different for different account)
 ```
-mysql -h expense-dev.czn6yzxlcsiv.us-east-1.rds.amazonaws.com -u root -pExpenseApp1
+mysql -h expense-dev.c05wi488svl2.us-east-1.rds.amazonaws.com -u root -pExpenseApp1
 ```
 ```
 USE transactions;
@@ -68,7 +69,7 @@ kubectl create namespace expense
 * IAM policy
 
 ```
-curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.10.0/docs/install/iam_policy.json
+curl -o iam-policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.16.0/docs/install/iam_policy.json
 ```
 
 * IAM Role created
@@ -83,9 +84,9 @@ eksctl create iamserviceaccount \
 --cluster=expense-dev \
 --namespace=kube-system \
 --name=aws-load-balancer-controller \
---attach-policy-arn=arn:aws:iam::315069654700:policy/AWSLoadBalancerControllerIAMPolicy \
+--attach-policy-arn=arn:aws:iam::695862934667:policy/AWSLoadBalancerControllerIAMPolicy \
 --override-existing-serviceaccounts \
---region us-east-1 \
+--region  us-east-1 \
 --approve
 ```
 
@@ -96,7 +97,7 @@ helm repo add eks https://aws.github.io/eks-charts
 ```
 
 ```
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=expense-dev --set serviceAccount.create=true --set serviceAccount.name=aws-load-balancer-controller
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system --set clusterName=expense-dev --set serviceAccount.create=true --set serviceAccount.name=aws-load-balancer-controller --set region=us-east-1 --set vpcId=
 ```
 
 * Make sure load balancer pods are running
